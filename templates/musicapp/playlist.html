@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block title %} Playlist {% endblock title %}
+{% block body %}
+{% load static %}
+<br>
+<div class="container">
+
+  <header class="section-heading">
+    <h3 class="section-title">All Playlists</h3>
+  </header><!-- sect-heading -->
+  <hr>
+  <!-- Movie list -->
+  <div class="row">
+    {% if playlists %}
+    {% for playlist in playlists %}
+    <div class="col-md-3">
+      <div class="thumbnail">
+        <a href="{% url 'playlist_songs' playlist.playlist_name %}">
+          <img src="{% static 'musicapp/images/bg.jpg' %}" class="img-responsive" height="200" width="200">
+        </a>
+        <center>
+          <h4 style="margin-left:-50px">{{playlist.playlist_name}}</h4>
+        </center>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>There isn't any playlist! First create new playlist.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock body %}

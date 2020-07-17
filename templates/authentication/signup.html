@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+{% block title %} MusicApp | {{ title }} {% endblock title %}
+{% block header %}
+<style>
+    .or-seperator {
+    margin: 20px 0 10px;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
+.or-seperator i {
+    padding: 0 10px;
+    background: #f7f7f7;
+    position: relative;
+    top: -11px;
+    z-index: 1;
+}
+
+</style>
+{% endblock header %}
+{% block body %}
+<main role="main" class="container col-12 col-sm-8 col-md-6 col-lg-4 offset-sm-2 offset-md-3 offset-lg-4">
+    <br>
+    <h1 class="text-center">Sign Up</h1>
+    <br> 
+    <a href="{% provider_login_url 'google' process='login' %}" class="btn btn-outline-dark btn-block">
+      <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+      Sign up with Google
+    </a>
+    <div class="or-seperator"><i>or</i></div>
+    <form method="post">
+      {% csrf_token %}
+      {{form|crispy}}
+      <button class="btn btn-success btn-block" type="submit">Sign Up</button>
+    </form>
+    <br>
+    <p>Already have an account? Please <a href="{% url 'login' %}">log in</a>.</p>
+  </main>
+  
+{% endblock body %}

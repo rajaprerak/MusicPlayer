@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block title %} All Songs {% endblock title %}
+{% block body %}
+
+<br>
+<div class="container">
+  <div class="col-md-13">
+    <form class="form-horizontal" role="search" method="get" action=''>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group">
+            <input type="text" class="form-control input-lg" style="border-radius: 5px;"
+            name="q" value="{{ request.GET.q }}" placeholder= "Search Songs "/>
+
+            <select name="languages" class="custom-select mx-1" style="border-radius: 5px;">
+              <option selected="selected" disabled>Languages</option>
+              {% if all_languages %}
+                  {% for language in all_languages %}
+                      <option value={{language}}>{{language}}</option>
+                  {% endfor %}
+              {% endif %}
+            </select>
+            <select name="singers" class="custom-select mx-1" style="border-radius: 5px;">
+              <option selected="selected" disabled>Singers</option>
+              {% if all_singers %}
+                  {% for singer in all_singers %}
+                      <option value={{singer}}>{{singer}}</option>
+                  {% endfor %}
+              {% endif %}
+            </select>
+                          
+            <span class='input-group-btn'>
+              <button type="submit" style="border-radius: 5px;" class="btn btn-primary">Search</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {% if not query_search %}
+  <header class="section-heading">
+    <h5 class="section-title">ALL SONGS</h5>
+  </header>
+  <hr>
+  {% else %}
+  <header class="section-heading">
+    <h5 class="section-title">SEARCH RESULTS</h5>
+  </header>
+  <hr>
+  {% endif %}
+  <!-- Song list -->
+  <div class="row" style="margin-right: 65px;margin-left:-15px;">
+    {% if songs %}
+    {% for song in songs %}
+    <div class="col-sm-2 col-md-2" style="padding-bottom: 15px;">
+      <div class="hovereffect">
+        <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135"
+          style="border-radius: 8px 8px 8px 8px;">
+        <div class="overlay">
+          <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'play_song' song.id %}"><i class="fa fa-play"
+              aria-hidden="true"></i></a>
+          <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'detail' song.id %}"><i class="fa fa-info-circle"
+              aria-hidden="true"></i></a>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<footer class="footer">
+  <div class="player" style="padding-left: 10px;padding-top:10px;background-color: #459dfb;">
+    <div class="left"><img src="{{last_played.song_img.url}}" height="90" width="90" style="border-radius: 10px 10px 10px 10px;"></div>
+    <div class="right">
+       <div class="top">
+          <a class="song" style="margin-left: 15px;color: white;">{{last_played.name}}</a>
+          <a class="artist" style="margin-left: 15px;color:white">{{last_played.album}}</a>
+       </div>
+       <div class="bottom">
+        {% if first_time %}
+          <audio controls=""  name="media" style="margin-left: 20px;margin-bottom: 10px;width: 1230px;height:30px"><source src="{{last_played.song_file.url}}" type="audio/mpeg" ></audio>
+        {% else %}
+          <audio controls="" autoplay name="media" style="margin-left: 20px;margin-bottom: 10px;width: 1230px;height:30px"><source src="{{last_played.song_file.url}}" type="audio/mpeg" ></audio>
+        {% endif %}
+        </div>
+    </div>
+  </div>
+</footer>
+
+
+{% endblock body %}

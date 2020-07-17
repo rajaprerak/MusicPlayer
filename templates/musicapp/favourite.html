@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block title %} Favourites {% endblock title %}
+
+{% block body %}
+<br>
+
+{% if messages %}
+<ul class="messages" style="width: 600px;margin-left:400px">
+  {% for message in messages %}
+  <div class="alert alert-success">
+    <strong>Success!</strong> {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %}
+</ul>
+{% endif %}
+<br>
+<br>
+
+<center>
+  <h3>Favourites</h3>
+</center>
+
+<table class="table table-hover table-primary">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Song Name</th>
+      <th scope="col">Album</th>
+      <th scope="col">Singer</th>
+      <th scope="col">Song</th>
+      <th scope="col">Action</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% if songs %}
+    {% for song in songs %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td><a href="{% url 'detail' song.id %}">{{song.name}}</a></td>
+      <td>{{song.album}}</td>
+      <td>{{song.singer}}</td>
+      <td>
+        <audio controls>
+          <source src="{{ song.song_file.url }}" type="audio/mpeg">
+        </audio>
+      </td>
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <input class="btn btn-primary" type="submit" value="Remove" name={{song.id}}>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+
+
+{% endblock body %}

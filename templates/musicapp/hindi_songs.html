@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block title %} Hindi Songs {% endblock title %}
+
+{% block body %}
+
+<br>
+<br>
+<div class="container">
+  <div class="col-md-12">
+    <form class="form-horizontal" role="search" method="get" action=''>
+      <div class="form-group">
+        <div class="input-group">
+          <input type="text" class="form-control input-lg " name="q" value="{{ request.GET.q }}"
+            placeholder="Search Songs " />
+          <span class='input-group-btn'>
+            <button type="button" class="btn btn-primary" type="submit">Search</button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Hindi Songs -->
+<div class="container" style="margin-bottom: 20px;">
+  <header class="section-heading">
+    <h5 class="section-title">HINDI SONGS</h5>
+  </header>
+  <hr>
+  <!-- Song list -->
+  <div class="row" style="margin-right: 65px;margin-left:-15px;">
+    {% if hindi_songs %}
+    {% for song in hindi_songs %}
+    <div class="col-sm-2 col-md-2" style="padding-bottom: 15px;">
+      <div class="hovereffect">
+        <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135"
+          style="border-radius: 8px 8px 8px 8px;">
+        <div class="overlay">
+          <a class="btn btn-outline-light mt-5 mx-1" href="{% url 'detail' song.id %}"><i class="fa fa-info-circle"
+              aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+<br>
+
+{% endblock body %}

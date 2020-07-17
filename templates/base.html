@@ -1,0 +1,192 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="/media/favicon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %} {% endblock title %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto+Mono&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet"> 
+    
+    <link href="{% static 'musicapp/css/musicplayer.css' %}" rel="stylesheet">
+    <style>
+        .navbar
+        {
+            font-family: 'Source Code Pro', monospace;
+        }
+        .hovereffect {
+    width: 100%;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    cursor: default;
+  }
+
+  .hovereffect .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out
+  }
+
+  .hovereffect img {
+    display: block;
+    position: relative;
+    -webkit-transition: all .4s linear;
+    transition: all .4s linear;
+  }
+
+  .hovereffect h2 {
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    font-size: 17px;
+    background: rgba(0, 0, 0, 0.6);
+    -webkit-transform: translatey(-100px);
+    -ms-transform: translatey(-100px);
+    transform: translatey(-100px);
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    padding: 10px;
+  }
+
+  .hovereffect a.info {
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    color: #fff;
+    border: 1px solid #fff;
+    background-color: transparent;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    margin: 50px 0 0;
+    padding: 7px 14px;
+  }
+
+  .hovereffect a.info:hover {
+    box-shadow: 0 0 5px #fff;
+  }
+
+  .hovereffect:hover img {
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  .hovereffect:hover .overlay {
+    opacity: 1;
+    filter: alpha(opacity=100);
+  }
+
+  .hovereffect:hover h2,
+  .hovereffect:hover a.info {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -ms-transform: translatey(0);
+    -webkit-transform: translatey(0);
+    transform: translatey(0);
+  }
+
+  .hovereffect:hover a.info {
+    -webkit-transition-delay: .2s;
+    transition-delay: .2s;
+  }
+
+  html {
+    position: relative;
+    min-height: 100%;
+  }
+
+  body {
+    /* Margin bottom by footer height */
+    margin-bottom: 0px;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 30px;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 80px;
+    background-color: #f5f5f5;
+  }
+       
+    </style>
+    {% block header %} {% endblock header %}
+    
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-primary bg-primary">
+        <div class="container">
+            <h1><a href="{% url 'index' %}" class="navbar-brand">
+            <strong style="color:white">GALVANIC</strong></a></h1>
+            <div class="collapse navbar-collapse">
+                <a href="{% url 'index' %}" class="btn btn-outline-light mt-2 mx-1">HOME</a>
+                <a href="{% url 'all_songs' %}" class="btn btn-outline-light mt-2 mx-1">ALL SONGS</a>
+                {% if request.user.is_active %}
+                
+                <div class="btn-group mt-2 mx-1">
+                    <a type="button" href="{% url 'mymusic' %}" class="btn btn-outline-light">MY MUSIC</a>
+                    <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'playlist' %}">Playlists</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'favourite' %}">Favourite Songs</a>
+                        </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="collapse navbar-collapse justify-content-end" id="navbar">
+            {% if request.user.is_active %}
+            <h5 class="text-white mt-3 mx-2">Hi, {{ request.user.username }}</h5>
+            <a href="{% url 'logout' %}" class="btn btn-light mt-2 mx-2"> Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-light mt-2 mx-2"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a>
+            <a href="{% url 'signup' %}" class="btn btn-light mt-2 mx-2"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a>
+            {% endif %}            
+            </div>
+        </div>
+
+    </nav>
+
+    {% block body %}
+    {% endblock body %}
+    
+    <div class="content">
+        <div class="lyrics"></div>
+     </div>
+    
+    <br>
+    <br>
+    <br>
+    
+    <!-- jQuery first, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.min.js" integrity="sha512-HYG9E+RmbXS7oy529Nk8byKFw5jqM3R1zzvoV2JnltsIGkK/AhZSzciYCNxDMOXEbYO9w6MJ6SpuYgm5PJPpeQ==" crossorigin="anonymous"></script>
+    {% block js %} {% endblock js %}
+</body>
+</html>
