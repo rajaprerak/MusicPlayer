@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'rbh8%u_$en!zodi6j_ual3azei=2(@yd1zrl7n0kz^t!xe$t2o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['galvanic-music.herokuapp.com', '127.0.0.1']
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     
     # external
     'crispy_forms',
+    'storages',
     
     # apps
     'authentication.apps.AuthenticationConfig',
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -136,24 +138,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
-# STATICFILES_DIRS = ()
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
-# STATIC_ROOT is the folder where static files will be stored after using manage.py collectstatic
-# Only used when deployment (not used during development)
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTHENTICATION_BACKENDS = (
@@ -182,3 +166,47 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+USE_S3 = config('USE_S3') == 'True'
+if USE_S3:
+    ### AWS settings
+    # Used to authenticate with S3
+    AWS_ACCESS_KEY_ID = config('S3_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('S3_SECRET_ACCESS_KEY')
+    
+    # Configure which endpoint to send files to, and retrieve files from.
+    AWS_S3_REGION_NAME = 'ap-south-1' 
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN=f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
+    # AWS_DEFAULT_ACL = None
+    
+    # General optimization for faster delivery
+    AWS_IS_GZIPPED = True
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    
+    ###  static settings
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    
+    
+    ### s3 media settings
+    MEDIA_LOCATION = 'media'
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
+    DEFAULT_FILE_STORAGE = 'musicplayer.storage_backends.MediaStorage'
+    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    
+else:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+    ] 

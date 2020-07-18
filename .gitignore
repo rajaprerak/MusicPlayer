@@ -327,7 +327,6 @@ reddit/media/
 
 
 .ipython/
-.env
 
 .envs/*
 
